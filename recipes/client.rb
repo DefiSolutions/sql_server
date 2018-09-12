@@ -1,9 +1,9 @@
 #
 # Author:: Seth Chisamore (<schisamo@chef.io>)
-# Cookbook Name:: sql_server
+# Cookbook:: sql_server
 # Recipe:: client
 #
-# Copyright:: 2011-2016, Chef Software, Inc.
+# Copyright:: 2011-2017, Chef Software, Inc.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -18,29 +18,24 @@
 # limitations under the License.
 #
 
-# server installer includes client packages
-unless node.recipe?('sql_server::server')
-  %w( native_client command_line_utils clr_types smo ps_extensions ).each do |pkg|
-    windows_package node['sql_server'][pkg]['package_name'] do
-      source node['sql_server'][pkg]['url']
-      checksum node['sql_server'][pkg]['checksum']
-      installer_type :msi
-      options "IACCEPTSQLNCLILICENSETERMS=#{node['sql_server']['accept_eula'] ? 'YES' : 'NO'}"
-      action :install
-    end
+if node['platform_version'].to_f == 6.1
+  windows_feature 'NetFx3' do
+    action :install
+    install_method :windows_feature_powershell
   end
+end
 
-  sql_server_version = node['sql_server']['version']
-  if sql_server_version =~ /2008/
-    install_dir = '100'
-  elsif sql_server_version =~ /2012/
-    install_dir = '110'
-  else
-    Chef::Application.fatal!("SQL Server version #{sql_server_version} not supported")
+%w( native_client command_line_utils clr_types smo ps_extensions ).each do |pkg|
+  package node['sql_server'][pkg]['package_name'] do # ~FC009
+    source node['sql_server'][pkg]['url']
+    checksum node['sql_server'][pkg]['checksum']
+    installer_type :msi
+    options "IACCEPTSQLNCLILICENSETERMS=#{node['sql_server']['accept_eula'] ? 'YES' : 'NO'}"
+    action :install
   end
+end
 
-  # update path
-  windows_path "#{node['sql_server']['install_dir']}\\#{install_dir}\\Tools\\Binn" do
-    action :add
-  end
+# update path
+windows_path "#{node['sql_server']['install_dir']}\\#{SqlServer::Helper.install_dir_version(node['sql_server']['version'])}\\Tools\\Binn" do
+  action :add
 end

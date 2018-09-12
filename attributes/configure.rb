@@ -1,7 +1,7 @@
 #
-# Author:: Seth Chisamore (<schisamo@chef.io>)
+# Author:: Baptiste Courtois (<b.courtois@criteo.com>)
 # Cookbook:: sql_server
-# Attribute:: default
+# Attribute:: configure
 #
 # Copyright:: 2011-2017, Chef Software, Inc.
 #
@@ -18,6 +18,15 @@
 # limitations under the License.
 #
 
-default['sql_server']['accept_eula'] = false
-default['sql_server']['product_key'] = nil
-default['sql_server']['version'] = '2012'
+# Tcp settings
+default['sql_server']['tcp_enabled']       = true
+default['sql_server']['port']              = 1433 # Keep port for backward compatibility
+default['sql_server']['tcp_dynamic_ports'] = ''
+# Named Pipes settings
+default['sql_server']['np_enabled']        = false
+# Shared Memory settings
+default['sql_server']['sm_enabled']        = true
+# Via settings
+default['sql_server']['via_default_port']  = '0:1433'
+default['sql_server']['via_enabled']       = false
+default['sql_server']['via_listen_info']   = '0:1433'

@@ -1,12 +1,12 @@
 name             'sql_server'
 maintainer       'Chef Software, Inc.'
 maintainer_email 'cookbooks@chef.io'
-license          'Apache 2.0'
+license          'Apache-2.0'
 description      'Installs/Configures Microsoft SQL Server'
 long_description IO.read(File.join(File.dirname(__FILE__), 'README.md'))
-version          '2.6.2'
+version          '5.5.0'
 supports         'windows'
-depends          'windows', '>= 1.2.6'
-
-source_url 'https://github.com/chef-cookbooks/sql_server' if respond_to?(:source_url)
-issues_url 'https://github.com/chef-cookbooks/sql_server/issues' if respond_to?(:issues_url)
+depends          'windows', '>= 2.0'
+source_url       'https://github.com/chef-cookbooks/sql_server'
+issues_url       'https://github.com/chef-cookbooks/sql_server/issues'
+chef_version     '>= 12.7' if respond_to?(:chef_version)
